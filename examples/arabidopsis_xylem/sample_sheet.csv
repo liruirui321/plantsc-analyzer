@@ -1,0 +1,5 @@
+sample_id,matrix_path,batch,condition,tissue,replicate
+sample1,/path/to/sample1/filtered_matrix,batch1,control,root,rep1
+sample2,/path/to/sample2/filtered_matrix,batch1,control,root,rep2
+sample3,/path/to/sample3/filtered_matrix,batch2,treatment,root,rep1
+sample4,/path/to/sample4/filtered_matrix,batch2,treatment,root,rep2

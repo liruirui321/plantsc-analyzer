@@ -1,0 +1,23 @@
+gene_id,gene_symbol,cell_type,tissue,sub_type,confidence,source,pmid,notes
+AT5G44030,VND6,vessel,xylem,protoxylem,high,literature,17237352,Master regulator of vessel differentiation
+AT5G62380,VND7,vessel,xylem,metaxylem,high,literature,17237352,Master regulator of vessel differentiation
+AT1G71930,XCP1,vessel,xylem,,high,literature,18326826,Xylem cysteine protease
+AT4G36160,SND1,fiber,xylem,,high,literature,16473969,Secondary wall NAC domain protein
+AT3G61910,NST1,fiber,xylem,,high,literature,17237352,NAC secondary wall thickening promoting factor
+AT3G10480,NST2,fiber,xylem,,high,literature,17237352,NAC secondary wall thickening promoting factor
+AT5G12870,MYB46,fiber,xylem,,high,literature,19376935,Master regulator of secondary wall biosynthesis
+AT5G67300,MYB83,fiber,xylem,,high,literature,19376935,Master regulator of secondary wall biosynthesis
+AT1G32770,CESA4,fiber,xylem,,high,literature,15269332,Cellulose synthase for secondary wall
+AT5G44030,CESA7,fiber,xylem,,high,literature,15269332,Cellulose synthase for secondary wall
+AT5G17420,CESA8,fiber,xylem,,high,literature,15269332,Cellulose synthase for secondary wall
+AT2G37040,PAL1,fiber,xylem,,medium,literature,11118137,Phenylalanine ammonia-lyase
+AT4G36220,CCoAOMT1,fiber,xylem,,medium,literature,9662532,Caffeoyl-CoA O-methyltransferase
+AT5G54160,COMT,fiber,xylem,,medium,literature,9662532,Caffeic acid O-methyltransferase
+AT4G36990,LAC4,fiber,xylem,,high,literature,15269332,Laccase involved in lignification
+AT2G29130,LAC17,fiber,xylem,,high,literature,15269332,Laccase involved in lignification
+AT1G09610,RAY1,ray_parenchyma,xylem,,medium,database,,Ray cell marker
+AT3G50060,MYB52,ray_parenchyma,xylem,,medium,literature,19376935,Ray cell transcription factor
+AT1G66230,RAP2.6,cambium,xylem,,medium,literature,23645631,Cambial meristem marker
+AT5G60690,WOX4,cambium,xylem,,high,literature,19376935,Cambial stem cell regulator
+AT1G62360,WOX14,cambium,xylem,,high,literature,19376935,Cambial stem cell regulator
+AT2G18550,PXY,cambium,xylem,,high,literature,18326826,Phloem intercalated with xylem receptor

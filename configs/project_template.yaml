@@ -1,0 +1,219 @@
+# Project Configuration Template
+# PlantSC-Analyzer
+
+# ============================================================
+# Project Information
+# ============================================================
+project:
+  name: "PlantSC_Project"
+  species: "arabidopsis"  # arabidopsis, rice, maize, poplar, custom
+  tissue: "root"          # root, leaf, stem, flower, seed, custom
+  description: "Plant single-cell RNA-seq analysis"
+  author: "Your Name"
+  date: "2026-04-24"
+
+# ============================================================
+# Input Data
+# ============================================================
+input:
+  # Data type: 'fastq' or 'matrix'
+  data_type: "fastq"  # fastq: raw sequencing data, matrix: pre-computed matrix
+
+  # Sample sheet (CSV format)
+  # For FASTQ: sample_id, fastq_dir, batch, condition, platform, kit_version
+  # For Matrix: sample_id, matrix_path, batch, condition
+  sample_sheet: "./samples.csv"
+
+  # Reference genome (required for FASTQ input)
+  genome_dir: null    # For BGI: dnbc4tools genome index
+  genome_fasta: null  # For 10X: CellRanger reference transcriptome
+  genome_gtf: null
+
+# ============================================================
+# Step 0: Matrix Generation (only if data_type='fastq')
+# ============================================================
+matrix_generation:
+  # Platform: 'auto', 'BGI', '10X'
+  platform: "auto"
+
+  # BGI-specific settings
+  bgi:
+    kit_version: "auto"  # auto, V2.0, V2.5, V3.0
+    trim_oligo: true     # Auto-trim oligo for V2.0/V2.5
+    dnbc4tools_params:
+      min_reads: 1000
+
+  # 10X-specific settings
+  tenx:
+    chemistry: "auto"    # auto, SC3Pv3, SC5P-PE, etc.
+    expect_cells: null   # Expected cell count (null = auto)
+    cellranger_params:
+      include_introns: false
+
+# ============================================================
+# Output
+# ============================================================
+output:
+  base_dir: "./results"
+  save_intermediate: true
+  generate_reports: true
+
+# ============================================================
+# Step 1: Quality Control
+# ============================================================
+qc:
+  # Basic filtering
+  min_genes: 200          # Minimum genes per cell
+  max_genes: 6000         # Maximum genes per cell (doublet threshold)
+  min_cells: 3            # Minimum cells per gene
+
+  # Mitochondrial filtering
+  mito_threshold: 5.0     # Maximum mitochondrial percentage
+  mito_prefix: "ATMG"     # Mitochondrial gene prefix (AT: ATMG, Rice: OSMT)
+
+  # Ambient RNA removal (SoupX)
+  run_soupx: true
+  soupx_params:
+    tfidf_min: 1.0
+
+  # Doublet detection (Scrublet)
+  run_scrublet: true
+  scrublet_params:
+    expected_doublet_rate: 0.06
+    threshold: 0.25
+
+# ============================================================
+# Step 2: Normalization
+# ============================================================
+normalization:
+  method: "log1p"         # log1p, scran, sctransform
+  target_sum: 10000       # Library size normalization target
+
+  # Highly variable genes
+  n_hvg: 3000
+  hvg_flavor: "seurat"    # seurat, cell_ranger, seurat_v3
+  hvg_batch_key: null     # Batch key for HVG selection (null = no batch)
+
+# ============================================================
+# Step 3: Batch Integration (optional)
+# ============================================================
+integration:
+  run: false              # Set to true if multiple batches
+  method: "harmony"       # harmony, scvi, scanorama, combat
+  batch_key: "batch"      # Column name in sample_sheet
+
+  # Method-specific parameters
+  harmony:
+    n_pcs: 50
+    theta: 2.0
+
+  scvi:
+    n_latent: 30
+    n_layers: 2
+    n_epochs: 400
+
+# ============================================================
+# Step 4: Dimensionality Reduction & Clustering
+# ============================================================
+clustering:
+  # PCA
+  n_pcs: 50
+
+  # Neighborhood graph
+  n_neighbors: 15
+  metric: "euclidean"     # euclidean, cosine
+
+  # Clustering
+  algorithm: "leiden"     # leiden, louvain
+  resolution: [0.4, 0.6, 0.8, 1.0]  # Try multiple resolutions
+
+  # UMAP
+  umap:
+    n_components: 2
+    min_dist: 0.3
+    spread: 1.0
+
+# ============================================================
+# Step 5: Cell Type Annotation
+# ============================================================
+annotation:
+  # Marker database
+  marker_database: "./knowledge_base/markers/arabidopsis/all_markers.csv"
+
+  # Annotation methods
+  methods:
+    - "marker"            # Marker gene-based
+    - "singler"           # SingleR (if reference available)
+    # - "scgpt"           # scGPT (requires GPU)
+
+  # Marker-based annotation
+  marker_params:
+    min_pct: 0.25         # Minimum percentage of cells expressing marker
+    logfc_threshold: 0.5  # Log fold-change threshold
+
+  # Confidence threshold
+  confidence_threshold: 0.7
+
+# ============================================================
+# Step 6: Downstream Analysis
+# ============================================================
+downstream:
+  # Differential expression analysis
+  deg:
+    run: true
+    method: "wilcoxon"    # wilcoxon, t-test, logreg
+    min_pct: 0.1
+    logfc_threshold: 0.25
+
+  # Trajectory inference
+  trajectory:
+    run: false
+    method: "paga"        # paga, diffusion_map, dpt
+    root_cell_type: null  # Specify root cell type
+
+  # Gene regulatory network
+  grn:
+    run: false
+    method: "scenic"      # scenic, celloracle
+
+  # Cell-cell communication
+  cellchat:
+    run: false
+    database: "CellChatDB.plant"  # Custom plant database
+
+  # GO/KEGG enrichment
+  enrichment:
+    run: true
+    databases: ["GO_BP", "GO_MF", "KEGG"]
+    organism: "ath"       # ath: Arabidopsis, osa: Rice
+
+# ============================================================
+# Compute Resources
+# ============================================================
+resources:
+  max_cpus: 16
+  max_memory: "64GB"
+  max_time: "48h"
+
+  # GPU (for scVI, scGPT)
+  use_gpu: false
+  gpu_device: 0
+
+# ============================================================
+# Agent Settings
+# ============================================================
+agent:
+  mode: "interactive"     # interactive, auto
+
+  # Knowledge retrieval
+  use_rag: true
+  rag_model: "sentence-transformers/all-MiniLM-L6-v2"
+
+  # Parameter recommendation
+  auto_recommend: true
+
+  # Checkpoints (ask user at these steps)
+  checkpoints:
+    - "qc_complete"
+    - "clustering_complete"
+    - "annotation_complete"
