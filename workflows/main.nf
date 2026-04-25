@@ -3,7 +3,7 @@
 /*
  * PlantSC-Analyzer Main Workflow
  *
- * A modular single-cell RNA-seq analysis pipeline for plant xylem research
+ * A modular single-cell RNA-seq analysis pipeline for plant research
  *
  * Author: Cherry
  * Version: 0.1.0-alpha
@@ -13,6 +13,7 @@
 nextflow.enable.dsl=2
 
 // Import modules
+include { MATRIX_GENERATION } from './modules/matrix_generation.nf'
 include { QC_WORKFLOW } from './modules/qc.nf'
 include { NORMALIZE_WORKFLOW } from './modules/normalize.nf'
 include { INTEGRATE_WORKFLOW } from './modules/integrate.nf'
@@ -39,12 +40,13 @@ def printBanner() {
     Output Dir : ${params.outdir}
 
     Workflow Steps:
+    ├── [0] Matrix Generation (if FASTQ input)
     ├── [1] Quality Control (QC)
     ├── [2] Normalization
-    ├── [3] Batch Integration
+    ├── [3] Batch Integration (optional)
     ├── [4] Clustering
     ├── [5] Cell Type Annotation
-    └── [6] Downstream Analysis
+    └── [6] Downstream Analysis (optional)
 
     """.stripIndent()
 }
@@ -67,14 +69,22 @@ workflow {
         }
         .set { samples_ch }
 
+    // Step 0: Matrix Generation (if FASTQ input)
+    if (params.data_type == 'fastq') {
+        MATRIX_GENERATION(samples_ch)
+        matrix_data = MATRIX_GENERATION.out.h5ad
+    } else {
+        matrix_data = samples_ch
+    }
+
     // Step 1: Quality Control
-    QC_WORKFLOW(samples_ch)
+    QC_WORKFLOW(matrix_data)
 
     // Step 2: Normalization
     NORMALIZE_WORKFLOW(QC_WORKFLOW.out.filtered_data)
 
-    // Step 3: Batch Integration (if multiple batches)
-    if (params.run_integration) {
+    // Step 3: Batch Integration (if enabled)
+    if (params.integration.run) {
         INTEGRATE_WORKFLOW(NORMALIZE_WORKFLOW.out.normalized_data)
         integrated_data = INTEGRATE_WORKFLOW.out.integrated_data
     } else {
@@ -85,13 +95,14 @@ workflow {
     CLUSTER_WORKFLOW(integrated_data)
 
     // Step 5: Cell Type Annotation
+    marker_db = file(params.annotation.marker_database)
     ANNOTATE_WORKFLOW(
         CLUSTER_WORKFLOW.out.clustered_data,
-        params.marker_database
+        marker_db
     )
 
-    // Step 6: Downstream Analysis
-    if (params.run_downstream) {
+    // Step 6: Downstream Analysis (if enabled)
+    if (params.downstream.deg.run || params.downstream.trajectory.run) {
         DOWNSTREAM_WORKFLOW(ANNOTATE_WORKFLOW.out.annotated_data)
     }
 }
