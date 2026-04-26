@@ -20,10 +20,17 @@ dependencies:
   - anndata>=0.9
   - leidenalg
   - python-igraph
+  - scrublet>=0.2.3
+
+  # Visualization
+  - matplotlib>=3.7
+  - seaborn>=0.12
+  - plotly>=5.14
 
   # R and Bioconductor (for Seurat, SoupX, etc.)
   - r-base=4.3
   - r-seurat
+  - r-soupx
   - bioconductor-singlecellexperiment
   - bioconductor-scater
 
@@ -34,13 +41,19 @@ dependencies:
   - pyyaml
   - tqdm
   - joblib
+  - h5py
+  - tables
+
+  # Testing
+  - pytest>=7.0
+  - pytest-cov
 
   # Pip packages
   - pip:
     - scvi-tools>=1.0.0
     - harmonypy>=0.0.9
+    - gprofiler-official>=1.0.0
     - langchain>=0.1.0
     - chromadb>=0.4.0
     - sentence-transformers>=2.2.0
     - rich>=13.0.0
-    - plotly>=5.14.0
