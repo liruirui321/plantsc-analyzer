@@ -251,11 +251,21 @@ python agent/plant_sc_agent.py --query "Harmony theta 参数"
 
 ### 待下载文献
 
-| 文献 | 优先级 | 原因 |
-|------|--------|------|
-| Shahan_2022_Root_Spatiotemporal.pdf | 高 | 最新根图谱 |
-| Xu_2021_Flower_Atlas.pdf | 中 | 花 Marker 补充 |
-| Liu_2021_Rice_Root.pdf | 中 | 水稻支持 |
+| 文献 | 优先级 | 原因 | PMID/DOI |
+|------|--------|------|----------|
+| Shahan_2022_Root_Spatiotemporal.pdf | 高 | 最新根图谱 | 35063072 |
+| Xu_2021_Flower_Atlas.pdf | 中 | 花 Marker 补充 | 33793920 |
+| Liu_2021_Rice_Root.pdf | 中 | 水稻支持 | 33548506 |
+| FX-Cell_2025_Nature_Methods.pdf | 高 | 新一代细胞制备方法 | 10.1038/s41592-025-02940-8 |
+| GPT4_Annotation_2024_Nature_Methods.pdf | 高 | LLM 辅助注释 | 10.1038/s41592-024-02235-4 |
+| Arabidopsis_Life_Cycle_2025_Nature_Plants.pdf | 高 | 最全面拟南芥图谱 | 10.1038/s41477-025-02072-z |
+| Xylem_Evolution_2023_Genome_Biology.pdf | 中 | 木质部进化 | 36624504 |
+| Unified_Plant_Atlas_2025_Cell.pdf | 高 | 跨物种细胞图谱 | Cell 2025 |
+| Maize_Root_2025.pdf | 中 | 玉米根图谱 | PMC12695853 |
+| Soybean_Atlas_2025.pdf | 中 | 大豆多组学图谱 | 39742806 |
+| scPlantDB_2024_NAR.pdf | 高 | 植物细胞数据库 | NAR 2024 |
+| SPmarker_2022_New_Phytologist.pdf | 中 | ML Marker 发现 | PMC9314150 |
+| Cross_Species_Benchmark_2024_NAR.pdf | 中 | 跨物种整合评测 | 10.1093/nar/gkae1316 |
 
 ---
 

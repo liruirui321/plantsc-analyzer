@@ -26,3 +26,8 @@
 
 # Maize
 33955490  # Ortiz-Ramirez_2021_Maize_Root
+
+# New additions from 2024-2025 literature review
+36624504  # Xylem_Evolution_2023_Genome_Biology
+39742806  # Soybean_Atlas_2025
+34882927  # Poplar_Xylem_2021
