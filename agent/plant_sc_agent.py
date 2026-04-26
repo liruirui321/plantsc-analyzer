@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 PlantSC Interactive Agent
 
@@ -6,17 +7,25 @@ PlantSC Interactive Agent
 2. 质量检查
 3. 结果解读
 4. 知识库查询
+5. 报告生成
 """
 
 import argparse
 import yaml
 import sys
 from pathlib import Path
-from typing import Dict, Any, List
-from rich.console import Console
-from rich.prompt import Prompt, Confirm
-from rich.panel import Panel
-from rich.table import Table
+from typing import Dict, Any, List, Optional
+import scanpy as sc
+
+try:
+    from rich.console import Console
+    from rich.prompt import Prompt, Confirm
+    from rich.panel import Panel
+    from rich.table import Table
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+    print("[WARNING] rich not installed. Install with: pip install rich")
 
 from knowledge_retriever import KnowledgeRetriever
 from parameter_recommender import ParameterRecommender
@@ -26,9 +35,13 @@ from report_generator import ReportGenerator
 class PlantSCAgent:
     """植物单细胞分析交互式 Agent"""
 
-    def __init__(self, config_path: str):
-        self.console = Console()
-        self.config = self.load_config(config_path)
+    def __init__(self, config_path: str = None):
+        if RICH_AVAILABLE:
+            self.console = Console()
+        else:
+            self.console = None
+
+        self.config = self.load_config(config_path) if config_path else {}
         self.knowledge = KnowledgeRetriever()
         self.recommender = ParameterRecommender()
         self.reporter = ReportGenerator()
@@ -38,195 +51,188 @@ class PlantSCAgent:
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
 
+    def print(self, text: str, style: str = None):
+        """统一的打印接口"""
+        if self.console:
+            self.console.print(text, style=style)
+        else:
+            print(text)
+
     def print_banner(self):
         """打印欢迎信息"""
         banner = """
-        ╔═══════════════════════════════════════════════════════════╗
-        ║                                                           ║
-        ║   🌱 PlantSC-Analyzer Interactive Agent                  ║
-        ║                                                           ║
-        ║   Your AI assistant for plant single-cell analysis       ║
-        ║                                                           ║
-        ╚═══════════════════════════════════════════════════════════╝
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║   🌱 PlantSC-Analyzer Interactive Agent                  ║
+║                                                           ║
+║   Your AI assistant for plant single-cell analysis       ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
         """
-        self.console.print(banner, style="bold green")
+        self.print(banner, style="bold green")
 
-    def interactive_qc(self, qc_metrics: Dict[str, Any]) -> bool:
-        """交互式质控检查"""
-        self.console.print("\n[bold cyan]📊 Step 1: Quality Control Results[/bold cyan]\n")
+    def analyze_and_recommend(self, adata_path: str) -> Dict[str, Any]:
+        """
+        分析数据并生成推荐参数
 
-        # 显示 QC 指标
-        table = Table(title="QC Metrics Summary")
-        table.add_column("Sample", style="cyan")
-        table.add_column("Cells", style="magenta")
-        table.add_column("Genes/Cell", style="green")
-        table.add_column("Alignment Rate", style="yellow")
-        table.add_column("Status", style="bold")
+        Args:
+            adata_path: AnnData 文件路径
 
-        for sample, metrics in qc_metrics.items():
-            status = "✅ Pass" if metrics['pass'] else "❌ Fail"
-            table.add_row(
-                sample,
-                str(metrics['n_cells']),
-                str(metrics['median_genes']),
-                f"{metrics['alignment_rate']:.1f}%",
-                status
-            )
+        Returns:
+            推荐参数字典
+        """
+        self.print("\n[INFO] Loading data...", style="cyan")
+        adata = sc.read_h5ad(adata_path)
 
-        self.console.print(table)
+        self.print(f"[INFO] Loaded: {adata.n_obs} cells, {adata.n_vars} genes", style="green")
 
-        # 询问用户
-        if not all(m['pass'] for m in qc_metrics.values()):
-            self.console.print("\n[bold red]⚠️  Some samples failed QC![/bold red]")
-            self.console.print("Recommendation: Re-sequence failed samples or adjust thresholds")
+        # 生成推荐
+        recommendations = self.recommender.recommend_all_params(adata)
 
-            proceed = Confirm.ask("\nDo you want to proceed anyway?", default=False)
-            return proceed
+        # 打印推荐
+        self.recommender.print_recommendations(recommendations)
+
+        return recommendations
+
+    def query_markers(self, species: str, tissue: str = None,
+                     cell_type: str = None) -> List[Dict]:
+        """
+        查询 Marker 基因
+
+        Args:
+            species: 物种名称
+            tissue: 组织类型（可选）
+            cell_type: 细胞类型（可选）
+
+        Returns:
+            Marker 基因列表
+        """
+        self.print(f"\n[INFO] Querying markers for {species}...", style="cyan")
+
+        markers = self.knowledge.get_markers(species, tissue, cell_type)
+
+        if markers:
+            self.print(f"[INFO] Found {len(markers)} markers", style="green")
+
+            # 显示前 10 个
+            self.print("\nTop 10 markers:")
+            for i, marker in enumerate(markers[:10], 1):
+                self.print(f"  {i}. {marker.get('gene_symbol')} - {marker.get('cell_type')} "
+                          f"(confidence: {marker.get('confidence', 'N/A')})")
         else:
-            self.console.print("\n[bold green]✅ All samples passed QC![/bold green]")
-            return True
+            self.print("[WARNING] No markers found", style="yellow")
 
-    def recommend_filter_params(self, data_stats: Dict[str, Any]) -> Dict[str, Any]:
-        """推荐过滤参数"""
-        self.console.print("\n[bold cyan]🔍 Step 2: Filter Parameter Recommendation[/bold cyan]\n")
+        return markers
 
-        # 使用推荐引擎
-        recommended = self.recommender.recommend_qc_params(data_stats)
+    def generate_report(self, results_dir: str, output_path: str):
+        """
+        生成分析报告
 
-        # 显示推荐参数
-        panel = Panel(
-            f"""
-[bold]Recommended Parameters:[/bold]
+        Args:
+            results_dir: 结果目录
+            output_path: 输出报告路径
+        """
+        self.print("\n[INFO] Generating analysis report...", style="cyan")
 
-• min_genes: {recommended['min_genes']} (based on gene count distribution)
-• max_genes: {recommended['max_genes']} (exclude potential doublets)
-• mito_threshold: {recommended['mito_threshold']}% (mitochondrial content)
-• doublet_threshold: {recommended['doublet_threshold']} (Scrublet score)
+        # 收集结果
+        collected = self.reporter.collect_pipeline_results(results_dir)
 
-[dim]Rationale: {recommended['rationale']}[/dim]
-            """,
-            title="Parameter Recommendation",
-            border_style="green"
-        )
-        self.console.print(panel)
+        # 生成报告
+        project_info = self.config.get('project', {
+            'project_name': 'PlantSC Analysis',
+            'species': 'arabidopsis',
+            'tissue': 'root'
+        })
 
-        # 询问用户
-        choice = Prompt.ask(
-            "\nAccept these parameters?",
-            choices=["y", "n", "edit"],
-            default="y"
-        )
+        # TODO: 从结果中提取实际指标
+        metrics = {
+            'Total Cells': 'N/A',
+            'Total Genes': 'N/A',
+            'Cell Types': 'N/A',
+            'Clusters': 'N/A'
+        }
 
-        if choice == "y":
-            return recommended
-        elif choice == "edit":
-            return self.edit_params(recommended)
-        else:
-            return self.config['qc']
+        steps = []
+        results = collected
+        recommendations = []
 
-    def edit_params(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """编辑参数"""
-        self.console.print("\n[bold]Edit Parameters:[/bold]")
-
-        edited = {}
-        for key, value in params.items():
-            if key == 'rationale':
-                continue
-            new_value = Prompt.ask(f"{key}", default=str(value))
-            edited[key] = type(value)(new_value)
-
-        return edited
-
-    def recommend_resolution(self, clustering_metrics: Dict[str, Any]) -> float:
-        """推荐聚类 resolution"""
-        self.console.print("\n[bold cyan]🎯 Step 4: Clustering Resolution Selection[/bold cyan]\n")
-
-        # 显示不同 resolution 的结果
-        table = Table(title="Clustering Results at Different Resolutions")
-        table.add_column("Resolution", style="cyan")
-        table.add_column("N Clusters", style="magenta")
-        table.add_column("Silhouette", style="green")
-        table.add_column("Modularity", style="yellow")
-
-        for res, metrics in clustering_metrics.items():
-            table.add_row(
-                str(res),
-                str(metrics['n_clusters']),
-                f"{metrics['silhouette']:.3f}",
-                f"{metrics['modularity']:.3f}"
-            )
-
-        self.console.print(table)
-
-        # 推荐最佳 resolution
-        best_res = self.recommender.recommend_resolution(clustering_metrics)
-        self.console.print(f"\n[bold green]✨ Recommended resolution: {best_res}[/bold green]")
-
-        # 询问用户
-        choice = Prompt.ask(
-            "\nSelect resolution",
-            default=str(best_res)
+        self.reporter.generate_html_report(
+            project_info, metrics, steps, results, recommendations, output_path
         )
 
-        return float(choice)
+        self.print(f"[INFO] Report saved to: {output_path}", style="green")
 
-    def confirm_annotation(self, annotation_results: Dict[str, Any]) -> bool:
-        """确认细胞类型注释"""
-        self.console.print("\n[bold cyan]🏷️  Step 5: Cell Type Annotation Results[/bold cyan]\n")
-
-        # 显示注释结果
-        table = Table(title="Annotated Cell Types")
-        table.add_column("Cluster", style="cyan")
-        table.add_column("Cell Type", style="magenta")
-        table.add_column("Confidence", style="green")
-        table.add_column("N Cells", style="yellow")
-        table.add_column("Top Markers", style="blue")
-
-        for cluster, info in annotation_results.items():
-            table.add_row(
-                str(cluster),
-                info['cell_type'],
-                f"{info['confidence']:.2f}",
-                str(info['n_cells']),
-                ", ".join(info['top_markers'][:3])
-            )
-
-        self.console.print(table)
-
-        # 询问用户
-        return Confirm.ask("\nDo these annotations look correct?", default=True)
-
-    def run(self):
-        """运行交互式分析流程"""
+    def interactive_mode(self):
+        """交互式模式"""
         self.print_banner()
 
-        # 显示项目信息
-        self.console.print(f"\n[bold]Project:[/bold] {self.config['project_name']}")
-        self.console.print(f"[bold]Species:[/bold] {self.config['species']}")
-        self.console.print(f"[bold]Tissue:[/bold] {self.config['tissue']}")
-        self.console.print(f"[bold]Samples:[/bold] {len(self.config['samples'])}\n")
+        while True:
+            self.print("\n" + "="*60)
+            self.print("What would you like to do?")
+            self.print("  1. Analyze data and get parameter recommendations")
+            self.print("  2. Query marker genes")
+            self.print("  3. Generate analysis report")
+            self.print("  4. Exit")
+            self.print("="*60)
 
-        # 确认开始
-        if not Confirm.ask("Start analysis?", default=True):
-            self.console.print("[yellow]Analysis cancelled.[/yellow]")
-            return
+            choice = input("\nEnter your choice (1-4): ").strip()
 
-        # TODO: 集成 Nextflow 执行
-        self.console.print("\n[bold green]🚀 Launching Nextflow pipeline...[/bold green]")
-        self.console.print("[dim]This is a placeholder. Full integration coming soon.[/dim]")
+            if choice == '1':
+                adata_path = input("Enter path to h5ad file: ").strip()
+                if Path(adata_path).exists():
+                    self.analyze_and_recommend(adata_path)
+                else:
+                    self.print(f"[ERROR] File not found: {adata_path}", style="red")
+
+            elif choice == '2':
+                species = input("Enter species (e.g., arabidopsis): ").strip()
+                tissue = input("Enter tissue (optional, press Enter to skip): ").strip() or None
+                cell_type = input("Enter cell type (optional, press Enter to skip): ").strip() or None
+                self.query_markers(species, tissue, cell_type)
+
+            elif choice == '3':
+                results_dir = input("Enter results directory: ").strip()
+                output_path = input("Enter output report path (e.g., report.html): ").strip()
+                if Path(results_dir).exists():
+                    self.generate_report(results_dir, output_path)
+                else:
+                    self.print(f"[ERROR] Directory not found: {results_dir}", style="red")
+
+            elif choice == '4':
+                self.print("\nGoodbye! 🌱", style="bold green")
+                break
+
+            else:
+                self.print("[ERROR] Invalid choice. Please enter 1-4.", style="red")
 
 
 def main():
     parser = argparse.ArgumentParser(description="PlantSC Interactive Agent")
-    parser.add_argument('--config', type=str, required=True, help='Path to config YAML')
+    parser.add_argument('--config', type=str, default=None, help='Path to config YAML')
     parser.add_argument('--mode', type=str, default='interactive',
                        choices=['interactive', 'auto'],
                        help='Run mode: interactive or automatic')
+    parser.add_argument('--analyze', type=str, default=None,
+                       help='Path to h5ad file for direct analysis')
+    parser.add_argument('--query_markers', type=str, default=None,
+                       help='Query markers for species (e.g., arabidopsis)')
+    parser.add_argument('--report', type=str, default=None,
+                       help='Generate report from results directory')
+    parser.add_argument('--output', type=str, default='report.html',
+                       help='Output path for report')
 
     args = parser.parse_args()
 
     agent = PlantSCAgent(args.config)
-    agent.run()
+
+    if args.analyze:
+        agent.analyze_and_recommend(args.analyze)
+    elif args.query_markers:
+        agent.query_markers(args.query_markers)
+    elif args.report:
+        agent.generate_report(args.report, args.output)
+    else:
+        agent.interactive_mode()
 
 
 if __name__ == '__main__':

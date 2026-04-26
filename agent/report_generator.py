@@ -1,0 +1,390 @@
+#!/usr/bin/env python3
+"""
+Report Generator
+
+Generates comprehensive analysis reports in HTML/PDF format.
+"""
+
+import sys
+from pathlib import Path
+from typing import Dict, Any, List, Optional
+from datetime import datetime
+import json
+
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PlantSC Analysis Report - {project_name}</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            background: linear-gradient(135deg, #2c5f2d 0%, #4a7c59 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }}
+        .header h1 {{
+            margin: 0;
+            font-size: 32px;
+        }}
+        .header .subtitle {{
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 16px;
+        }}
+        .section {{
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #fafafa;
+            border-left: 4px solid #2c5f2d;
+            border-radius: 5px;
+        }}
+        .section h2 {{
+            color: #2c5f2d;
+            margin-top: 0;
+        }}
+        .metric-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }}
+        .metric-box {{
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }}
+        .metric-label {{
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }}
+        .metric-value {{
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c5f2d;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+        }}
+        th, td {{
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }}
+        th {{
+            background-color: #2c5f2d;
+            color: white;
+            font-weight: 600;
+        }}
+        tr:hover {{
+            background-color: #f5f5f5;
+        }}
+        .status-pass {{
+            color: green;
+            font-weight: bold;
+        }}
+        .status-warning {{
+            color: orange;
+            font-weight: bold;
+        }}
+        .status-fail {{
+            color: red;
+            font-weight: bold;
+        }}
+        .image-gallery {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }}
+        .image-box {{
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }}
+        .image-box img {{
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }}
+        .image-caption {{
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }}
+        .footer {{
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }}
+        .recommendation {{
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }}
+        .recommendation-icon {{
+            color: #2c5f2d;
+            font-weight: bold;
+            margin-right: 10px;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 PlantSC Analysis Report</h1>
+            <div class="subtitle">
+                Project: {project_name} | Species: {species} | Tissue: {tissue}<br>
+                Generated: {timestamp}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Summary Statistics</h2>
+            <div class="metric-grid">
+                {metrics_html}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔬 Analysis Steps</h2>
+            {steps_html}
+        </div>
+
+        <div class="section">
+            <h2>📈 Results</h2>
+            {results_html}
+        </div>
+
+        <div class="section">
+            <h2>💡 Recommendations</h2>
+            {recommendations_html}
+        </div>
+
+        <div class="footer">
+            <p>Generated by PlantSC-Analyzer v0.1.0-alpha</p>
+            <p>For questions or issues, visit: <a href="https://github.com/liruirui321/plantsc-analyzer">GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+
+class ReportGenerator:
+    """Generate comprehensive analysis reports"""
+
+    def __init__(self):
+        self.report_data = {}
+
+    def generate_html_report(self, project_info: Dict[str, Any],
+                            metrics: Dict[str, Any],
+                            steps: List[Dict[str, Any]],
+                            results: Dict[str, Any],
+                            recommendations: List[str],
+                            output_path: str):
+        """
+        Generate HTML report
+
+        Args:
+            project_info: Project metadata
+            metrics: Summary metrics
+            steps: Analysis steps performed
+            results: Analysis results
+            recommendations: List of recommendations
+            output_path: Output HTML file path
+        """
+        # Generate metrics HTML
+        metrics_html = ""
+        for label, value in metrics.items():
+            metrics_html += f"""
+            <div class="metric-box">
+                <div class="metric-label">{label}</div>
+                <div class="metric-value">{value}</div>
+            </div>
+            """
+
+        # Generate steps HTML
+        steps_html = "<table><thead><tr><th>Step</th><th>Status</th><th>Duration</th><th>Details</th></tr></thead><tbody>"
+        for step in steps:
+            status_class = 'status-pass' if step.get('status') == 'completed' else 'status-warning'
+            steps_html += f"""
+            <tr>
+                <td>{step.get('name', 'Unknown')}</td>
+                <td class="{status_class}">{step.get('status', 'N/A')}</td>
+                <td>{step.get('duration', 'N/A')}</td>
+                <td>{step.get('details', '')}</td>
+            </tr>
+            """
+        steps_html += "</tbody></table>"
+
+        # Generate results HTML
+        results_html = ""
+        for key, value in results.items():
+            if isinstance(value, dict):
+                results_html += f"<h3>{key}</h3><ul>"
+                for k, v in value.items():
+                    results_html += f"<li><strong>{k}:</strong> {v}</li>"
+                results_html += "</ul>"
+            else:
+                results_html += f"<p><strong>{key}:</strong> {value}</p>"
+
+        # Generate recommendations HTML
+        recommendations_html = ""
+        for rec in recommendations:
+            recommendations_html += f"""
+            <div class="recommendation">
+                <span class="recommendation-icon">💡</span>{rec}
+            </div>
+            """
+
+        # Fill template
+        html_content = HTML_TEMPLATE.format(
+            project_name=project_info.get('project_name', 'Unknown'),
+            species=project_info.get('species', 'Unknown'),
+            tissue=project_info.get('tissue', 'Unknown'),
+            timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            metrics_html=metrics_html,
+            steps_html=steps_html,
+            results_html=results_html,
+            recommendations_html=recommendations_html
+        )
+
+        # Write to file
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
+        print(f"[INFO] HTML report generated: {output_path}")
+
+    def generate_summary_json(self, data: Dict[str, Any], output_path: str):
+        """
+        Generate JSON summary
+
+        Args:
+            data: Summary data
+            output_path: Output JSON file path
+        """
+        with open(output_path, 'w') as f:
+            json.dump(data, f, indent=2)
+
+        print(f"[INFO] JSON summary generated: {output_path}")
+
+    def collect_pipeline_results(self, results_dir: str) -> Dict[str, Any]:
+        """
+        Collect results from pipeline output directory
+
+        Args:
+            results_dir: Pipeline results directory
+
+        Returns:
+            Dictionary of collected results
+        """
+        results_path = Path(results_dir)
+
+        collected = {
+            'qc': {},
+            'normalization': {},
+            'clustering': {},
+            'annotation': {},
+            'downstream': {}
+        }
+
+        # Collect QC results
+        qc_dir = results_path / '01_qc'
+        if qc_dir.exists():
+            qc_report = qc_dir / 'qc_report.html'
+            if qc_report.exists():
+                collected['qc']['report'] = str(qc_report)
+
+        # Collect clustering results
+        cluster_dir = results_path / '04_cluster'
+        if cluster_dir.exists():
+            cluster_file = cluster_dir / 'clustered.h5ad'
+            if cluster_file.exists():
+                collected['clustering']['data'] = str(cluster_file)
+
+        # Collect annotation results
+        annot_dir = results_path / '05_annotate'
+        if annot_dir.exists():
+            annot_file = annot_dir / 'cell_type_annotation.csv'
+            if annot_file.exists():
+                collected['annotation']['csv'] = str(annot_file)
+
+        return collected
+
+
+def main():
+    """Example usage"""
+    generator = ReportGenerator()
+
+    # Example data
+    project_info = {
+        'project_name': 'Arabidopsis Root',
+        'species': 'arabidopsis',
+        'tissue': 'root'
+    }
+
+    metrics = {
+        'Total Cells': '15,234',
+        'Total Genes': '23,456',
+        'Cell Types': '8',
+        'Clusters': '12'
+    }
+
+    steps = [
+        {'name': 'QC', 'status': 'completed', 'duration': '5 min', 'details': 'Filtered 1,234 cells'},
+        {'name': 'Normalization', 'status': 'completed', 'duration': '3 min', 'details': 'Selected 3,000 HVGs'},
+        {'name': 'Clustering', 'status': 'completed', 'duration': '8 min', 'details': 'Found 12 clusters'},
+        {'name': 'Annotation', 'status': 'completed', 'duration': '2 min', 'details': 'Annotated 8 cell types'}
+    ]
+
+    results = {
+        'Cell Types': {
+            'Xylem': '2,345 cells',
+            'Phloem': '1,234 cells',
+            'Epidermis': '3,456 cells'
+        }
+    }
+
+    recommendations = [
+        "Consider increasing resolution for finer clustering",
+        "Add more marker genes for better annotation",
+        "Run trajectory analysis to study differentiation"
+    ]
+
+    generator.generate_html_report(
+        project_info, metrics, steps, results, recommendations,
+        'analysis_report.html'
+    )
+
+
+if __name__ == '__main__':
+    main()
