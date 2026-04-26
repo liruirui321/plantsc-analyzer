@@ -1,0 +1,28 @@
+# Literature Download List
+
+# Methods Papers
+33367645  # Young_2020_SoupX
+30954476  # Wolock_2019_Scrublet
+31740822  # Korsunsky_2019_Harmony
+30504886  # Lopez_2018_scVI
+30914743  # Traag_2019_Leiden
+31217225  # Luecken_2019_BestPractices
+
+# Arabidopsis Root
+31178400  # Denyer_2019_Root_Atlas
+35063072  # Shahan_2022_Root_Spatiotemporal
+
+# Arabidopsis Leaf
+33619379  # Kim_2021_Leaf_Atlas
+
+# Arabidopsis Flower
+33793920  # Xu_2021_Flower_Atlas
+
+# Arabidopsis Xylem
+31285559  # Zhang_2019_Xylem_Trajectory
+
+# Rice
+33548506  # Liu_2021_Rice_Root
+
+# Maize
+33955490  # Ortiz-Ramirez_2021_Maize_Root
