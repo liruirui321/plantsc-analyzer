@@ -1,0 +1,44 @@
+Bootstrap: docker
+From: continuumio/miniconda3:latest
+
+%labels
+    Author Cherry
+    Version 0.1.0-alpha
+    Description Plant single-cell RNA-seq analysis pipeline
+
+%files
+    envs/environment.yml /opt/plantsc-analyzer/environment.yml
+    workflows/ /opt/plantsc-analyzer/workflows/
+    scripts/ /opt/plantsc-analyzer/scripts/
+    agent/ /opt/plantsc-analyzer/agent/
+    knowledge_base/ /opt/plantsc-analyzer/knowledge_base/
+    configs/ /opt/plantsc-analyzer/configs/
+
+%post
+    apt-get update && apt-get install -y --no-install-recommends \
+        git wget curl procps && \
+        rm -rf /var/lib/apt/lists/*
+
+    cd /opt/plantsc-analyzer
+    conda env create -f environment.yml
+    conda clean -afy
+
+%environment
+    export PATH="/opt/conda/envs/plantsc/bin:${PATH}"
+    export PYTHONPATH="/opt/plantsc-analyzer:${PYTHONPATH}"
+
+%runscript
+    exec conda run --no-capture-output -n plantsc "$@"
+
+%test
+    conda run -n plantsc python -c "import scanpy; print(f'scanpy {scanpy.__version__}')"
+
+%help
+    PlantSC-Analyzer: Plant single-cell RNA-seq analysis pipeline
+
+    Usage:
+        singularity run plantsc-analyzer.sif nextflow run /opt/plantsc-analyzer/workflows/main.nf --help
+        singularity exec plantsc-analyzer.sif conda run -n plantsc python /opt/plantsc-analyzer/agent/plant_sc_agent.py
+
+    Build:
+        singularity build plantsc-analyzer.sif envs/singularity.def

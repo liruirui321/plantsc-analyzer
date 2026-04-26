@@ -4,6 +4,23 @@ Get started with PlantSC-Analyzer in 5 minutes!
 
 ## Step 1: Prepare Your Data
 
+### Option A: Starting from Raw FASTQ Files (Complete Pipeline)
+
+Create a sample sheet (`samples.csv`):
+
+```csv
+sample_id,fastq_1,fastq_2,platform,batch,condition
+sample1,/data/sample1_R1.fq.gz,/data/sample1_R2.fq.gz,BGI,batch1,control
+sample2,/data/sample2_R1.fq.gz,/data/sample2_R2.fq.gz,BGI,batch1,treatment
+sample3,/data/sample3_R1.fq.gz,/data/sample3_R2.fq.gz,10X,batch2,control
+```
+
+**Supported platforms**:
+- `BGI` - BGI DNBSEQ (V2.0/V2.5, auto-detected)
+- `10X` - 10X Genomics Chromium
+
+### Option B: Starting from Expression Matrix (Skip Step 0)
+
 Create a sample sheet (`samples.csv`):
 
 ```csv
@@ -11,6 +28,11 @@ sample_id,matrix_path,batch,condition
 sample1,/data/sample1/filtered_matrix,batch1,control
 sample2,/data/sample2/filtered_matrix,batch1,treatment
 ```
+
+**Supported matrix formats**:
+- 10X format (matrix.mtx.gz, features.tsv.gz, barcodes.tsv.gz)
+- h5ad format (AnnData)
+- h5 format (10X HDF5)
 
 ## Step 2: Create Configuration
 
@@ -29,21 +51,77 @@ project:
   tissue: "root"
 
 input:
+  data_type: "fastq"  # or "matrix" if starting from expression matrix
   sample_sheet: "./samples.csv"
 
 output:
   base_dir: "./results"
+
+# Optional: Customize parameters
+qc:
+  min_genes: 200
+  max_genes: 6000
+  mito_threshold: 5.0
+
+normalize:
+  n_hvg: 3000
+
+cluster:
+  resolution: [0.4, 0.6, 0.8, 1.0]
 ```
 
 ## Step 3: Run Analysis
 
-### Option A: Interactive Mode (Recommended)
+### Option A: Complete Pipeline from FASTQ
+
+```bash
+nextflow run workflows/main.nf \
+    --data_type fastq \
+    --sample_sheet samples.csv \
+    --species arabidopsis \
+    --tissue root \
+    --outdir results \
+    -profile standard
+```
+
+**What happens**:
+1. ✅ Platform detection (BGI/10X)
+2. ✅ Matrix generation (dnbc4tools/CellRanger)
+3. ✅ Quality control (SoupX + Scrublet)
+4. ✅ Normalization and HVG selection
+5. ✅ Batch integration (if multiple batches)
+6. ✅ Clustering and UMAP
+7. ✅ Cell type annotation
+8. ✅ Downstream analysis (optional)
+
+**Estimated time**: 2-6 hours (depends on data size)
+
+### Option B: From Expression Matrix (Faster)
+
+```bash
+nextflow run workflows/main.nf \
+    --data_type matrix \
+    --sample_sheet samples.csv \
+    --species arabidopsis \
+    --tissue root \
+    --outdir results \
+    -profile standard
+```
+
+**What happens**:
+1. ⏭️  Skip matrix generation
+2. ✅ Quality control
+3. ✅ Normalization → Clustering → Annotation
+
+**Estimated time**: 30 min - 2 hours
+
+### Option C: Interactive Mode with Agent
 
 ```bash
 python agent/plant_sc_agent.py --config my_project.yaml
 ```
 
-The agent will guide you through each step:
+The agent will guide you through each step and provide parameter recommendations:
 
 ```
 🌱 PlantSC Agent: Starting analysis...
@@ -62,30 +140,42 @@ The agent will guide you through each step:
 ❓ Accept these parameters? [Y/n/edit]: Y
 ```
 
-### Option B: Automatic Mode
-
-```bash
-nextflow run workflows/main.nf -c my_project.yaml
-```
-
 ## Step 4: View Results
 
 ```bash
 # Open HTML report
-open results/pipeline_report.html
+open results/report.html
 
 # Check output structure
 results/
+├── 00_matrix_generation/    # (if starting from FASTQ)
+│   ├── sample1/
+│   │   ├── raw_matrix/
+│   │   └── filtered_matrix/
+│   └── sample2/
 ├── 01_qc/
 │   ├── qc_summary_report.html
-│   └── filtered/
+│   ├── soupx/               # SoupX corrected matrices
+│   ├── scrublet/            # Doublet scores
+│   └── filtered.h5ad        # Filtered data
 ├── 02_normalize/
-├── 03_integrate/
+│   ├── normalized.h5ad
+│   └── hvg_plot.pdf
+├── 03_integrate/            # (if multiple batches)
+│   └── integrated.h5ad
 ├── 04_cluster/
-│   └── umap_clusters.pdf
+│   ├── clustered.h5ad
+│   ├── umap_clusters.pdf
+│   └── cluster_composition.pdf
 ├── 05_annotate/
-│   └── cell_type_annotation.csv
-└── 06_downstream/
+│   ├── annotated.h5ad       # Final annotated data
+│   ├── cell_type_annotation.csv
+│   └── annotation_umap.pdf
+├── 06_downstream/           # (optional)
+│   ├── deg/
+│   ├── enrichment/
+│   └── trajectory/
+└── report.html              # Complete analysis report
 ```
 
 ## Example Output
