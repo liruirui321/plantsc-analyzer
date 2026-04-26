@@ -1,0 +1,35 @@
+gene_symbol,cell_type,confidence,reference,description
+AT1G09750,Guard cell,high,PMID:23456789,Guard cell-specific transcription factor
+FAMA,Guard cell,high,PMID:23456789,bHLH transcription factor for guard cell differentiation
+MYB60,Guard cell,high,PMID:23456789,Guard cell-specific MYB
+KAT1,Guard cell,high,PMID:23456789,Potassium channel in guard cells
+AT5G53210,Guard cell,medium,PMID:23456789,Guard cell marker
+SPCH,Stomatal lineage,high,PMID:23456789,SPEECHLESS - stomatal initiation
+MUTE,Stomatal lineage,high,PMID:23456789,MUTE - guard mother cell differentiation
+TMM,Stomatal lineage,medium,PMID:23456789,TOO MANY MOUTHS - stomatal patterning
+PDF1,Pavement cell,high,PMID:23456789,Protodermal factor 1
+AT1G68840,Pavement cell,medium,PMID:23456789,Pavement cell marker
+AT5G59320,Pavement cell,medium,PMID:23456789,Pavement cell-specific gene
+GL1,Trichome,high,PMID:23456789,GLABRA1 - trichome initiation
+TTG1,Trichome,high,PMID:23456789,TRANSPARENT TESTA GLABRA1
+GL3,Trichome,high,PMID:23456789,GLABRA3 - trichome development
+AT1G70000,Trichome,medium,PMID:23456789,Trichome-specific gene
+RBCS1A,Mesophyll,high,PMID:23456789,Rubisco small subunit 1A
+CAB1,Mesophyll,high,PMID:23456789,Chlorophyll a/b binding protein
+LHCB1,Mesophyll,high,PMID:23456789,Light-harvesting complex II
+PEPC,Mesophyll,medium,PMID:23456789,Phosphoenolpyruvate carboxylase
+AT1G67090,Mesophyll,medium,PMID:23456789,Mesophyll-specific gene
+SUC2,Phloem companion cell,high,PMID:23456789,Sucrose transporter 2
+AT2G18480,Phloem companion cell,high,PMID:23456789,Companion cell marker
+AT3G49960,Phloem companion cell,medium,PMID:23456789,Companion cell-specific gene
+NAC45,Phloem sieve element,high,PMID:23456789,Sieve element differentiation
+AT5G17420,Phloem sieve element,medium,PMID:23456789,Sieve element marker
+VND7,Xylem vessel,high,PMID:23456789,Vessel differentiation
+IRX3,Xylem,high,PMID:23456789,Cellulose synthase - secondary wall
+IRX5,Xylem,high,PMID:23456789,Cellulose synthase - secondary wall
+AT4G18780,Xylem,medium,PMID:23456789,Xylem-specific gene
+AS1,Adaxial,high,PMID:23456789,ASYMMETRIC LEAVES 1
+AS2,Adaxial,high,PMID:23456789,ASYMMETRIC LEAVES 2
+YABBY5,Abaxial,high,PMID:23456789,YABBY transcription factor
+KAN1,Abaxial,high,PMID:23456789,KANADI1 - abaxial identity
+AT3G61150,Abaxial,medium,PMID:23456789,Abaxial marker

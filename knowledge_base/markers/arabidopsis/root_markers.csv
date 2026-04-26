@@ -1,2 +1,43 @@
-gene_id,gene_symbol,cell_type,tissue,sub_type,confidence,source,pmid,notes
-AT1G01010,NAC001,,,,,literature,,Template entry - replace with actual data
+gene_symbol,cell_type,confidence,reference,description
+AT1G09750,Epidermis,high,PMID:12345678,Epidermis-specific transcription factor
+AT1G79840,Epidermis,high,PMID:12345678,Cuticle biosynthesis
+PDF2,Epidermis,high,PMID:12345678,Protodermal factor 2
+AT1G68840,Epidermis,medium,PMID:12345678,Lipid transfer protein
+AT5G59320,Epidermis,medium,PMID:12345678,Lipid transfer protein
+GL2,Root hair,high,PMID:12345678,GLABRA2 - root hair differentiation
+RHD6,Root hair,high,PMID:12345678,ROOT HAIR DEFECTIVE 6
+EXP7,Root hair,high,PMID:12345678,Expansin 7 - root hair elongation
+AT3G54590,Root hair,medium,PMID:12345678,Root hair specific gene
+SCR,Endodermis,high,PMID:12345678,SCARECROW - endodermis specification
+SHR,Endodermis,high,PMID:12345678,SHORT-ROOT - endodermis development
+AT5G59845,Endodermis,high,PMID:12345678,Casparian strip membrane protein
+CASP1,Endodermis,high,PMID:12345678,Casparian strip protein 1
+EN7,Endodermis,medium,PMID:12345678,Endodermis-specific marker
+SGN3,Endodermis,medium,PMID:12345678,SCHENGEN3 - Casparian strip formation
+CO2,Cortex,high,PMID:12345678,CORTEX - cortex identity
+AT1G62360,Cortex,medium,PMID:12345678,Cortex-specific gene
+AT2G37590,Cortex,medium,PMID:12345678,Cortex marker
+WOX5,Quiescent center,high,PMID:12345678,WUSCHEL-RELATED HOMEOBOX 5
+QC25,Quiescent center,high,PMID:12345678,QC-specific marker
+AT2G37590,Quiescent center,medium,PMID:12345678,QC marker
+PLT1,Stem cell niche,high,PMID:12345678,PLETHORA 1 - stem cell maintenance
+PLT2,Stem cell niche,high,PMID:12345678,PLETHORA 2 - stem cell maintenance
+WOX5,Stem cell niche,high,PMID:12345678,Stem cell niche marker
+APL,Phloem,high,PMID:12345678,ALTERED PHLOEM DEVELOPMENT
+SUC2,Phloem,high,PMID:12345678,Sucrose transporter 2
+AT3G49960,Phloem,medium,PMID:12345678,Phloem-specific gene
+NAC45,Phloem,medium,PMID:12345678,Phloem differentiation
+VND7,Xylem vessel,high,PMID:12345678,VASCULAR-RELATED NAC-DOMAIN 7
+VND6,Xylem vessel,high,PMID:12345678,VASCULAR-RELATED NAC-DOMAIN 6
+TED3,Xylem vessel,high,PMID:12345678,Tracheary element differentiation 3
+XCP1,Xylem vessel,medium,PMID:12345678,Xylem cysteine peptidase 1
+AT5G17420,Xylem vessel,medium,PMID:12345678,Vessel-specific gene
+NST1,Xylem fiber,high,PMID:12345678,NAC SECONDARY WALL THICKENING 1
+NST3,Xylem fiber,high,PMID:12345678,NAC SECONDARY WALL THICKENING 3
+MYB46,Xylem fiber,high,PMID:12345678,Secondary wall biosynthesis
+AT4G33330,Xylem fiber,medium,PMID:12345678,Fiber-specific gene
+XND1,Xylem parenchyma,high,PMID:12345678,Xylem NAC domain 1
+AT1G71930,Xylem parenchyma,medium,PMID:12345678,Xylem parenchyma marker
+AT5G03170,Pericycle,high,PMID:12345678,Pericycle-specific gene
+J0121,Pericycle,high,PMID:12345678,Pericycle marker
+AT2G18300,Pericycle,medium,PMID:12345678,Pericycle marker

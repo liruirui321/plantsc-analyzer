@@ -1,0 +1,32 @@
+gene_symbol,cell_type,confidence,reference,description
+AP1,Sepal,high,PMID:34567890,APETALA1 - sepal identity
+AP2,Sepal,high,PMID:34567890,APETALA2 - sepal development
+SEP3,Sepal,medium,PMID:34567890,SEPALLATA3
+AT1G69120,Sepal,medium,PMID:34567890,Sepal-specific gene
+AP3,Petal,high,PMID:34567890,APETALA3 - petal identity
+PI,Petal,high,PMID:34567890,PISTILLATA - petal development
+SEP3,Petal,high,PMID:34567890,SEPALLATA3
+AT5G13790,Petal,medium,PMID:34567890,Petal-specific gene
+AP3,Stamen,high,PMID:34567890,APETALA3 - stamen identity
+AG,Stamen,high,PMID:34567890,AGAMOUS - stamen development
+SPL8,Stamen,high,PMID:34567890,SPOROCYTELESS - microsporogenesis
+MS1,Stamen,medium,PMID:34567890,MALE STERILITY 1
+DYT1,Stamen tapetum,high,PMID:34567890,DYSFUNCTIONAL TAPETUM 1
+AMS,Stamen tapetum,high,PMID:34567890,ABORTED MICROSPORES
+MS1,Stamen tapetum,high,PMID:34567890,Tapetum development
+AT2G26250,Stamen tapetum,medium,PMID:34567890,Tapetum-specific gene
+AG,Carpel,high,PMID:34567890,AGAMOUS - carpel identity
+STK,Carpel,high,PMID:34567890,SEEDSTICK - carpel development
+SHP1,Carpel,high,PMID:34567890,SHATTERPROOF1
+AT1G30950,Carpel,medium,PMID:34567890,Carpel-specific gene
+SPL,Ovule,high,PMID:34567890,SPOROCYTELESS - ovule development
+BEL1,Ovule,high,PMID:34567890,BELL1 - ovule identity
+ANT,Ovule,medium,PMID:34567890,AINTEGUMENTA
+AT2G33860,Ovule,medium,PMID:34567890,Ovule-specific gene
+DD45,Embryo sac,high,PMID:34567890,Embryo sac development
+MYB98,Synergid,high,PMID:34567890,Synergid cell marker
+AT5G62210,Egg cell,high,PMID:34567890,Egg cell-specific gene
+AT3G12960,Central cell,high,PMID:34567890,Central cell marker
+LFY,Floral meristem,high,PMID:34567890,LEAFY - floral meristem identity
+AP1,Floral meristem,high,PMID:34567890,APETALA1 - floral meristem
+FUL,Floral meristem,medium,PMID:34567890,FRUITFULL

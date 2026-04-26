@@ -1,0 +1,29 @@
+gene_symbol,cell_type,confidence,reference,description
+VND7,Xylem vessel,high,PMID:45678901,VASCULAR-RELATED NAC-DOMAIN 7
+VND6,Xylem vessel,high,PMID:45678901,VASCULAR-RELATED NAC-DOMAIN 6
+TED3,Xylem vessel,high,PMID:45678901,Tracheary element differentiation 3
+XCP1,Xylem vessel,medium,PMID:45678901,Xylem cysteine peptidase 1
+NST1,Xylem fiber,high,PMID:45678901,NAC SECONDARY WALL THICKENING 1
+NST3,Xylem fiber,high,PMID:45678901,NAC SECONDARY WALL THICKENING 3
+MYB46,Xylem fiber,high,PMID:45678901,Secondary wall biosynthesis
+IRX3,Xylem fiber,high,PMID:45678901,Cellulose synthase
+AT4G33330,Xylem fiber,medium,PMID:45678901,Fiber-specific gene
+XND1,Xylem parenchyma,high,PMID:45678901,Xylem NAC domain 1
+AT1G71930,Xylem parenchyma,medium,PMID:45678901,Xylem parenchyma marker
+APL,Phloem,high,PMID:45678901,ALTERED PHLOEM DEVELOPMENT
+SUC2,Phloem,high,PMID:45678901,Sucrose transporter 2
+NAC45,Phloem,high,PMID:45678901,Phloem differentiation
+AT3G49960,Phloem,medium,PMID:45678901,Phloem-specific gene
+AT2G18480,Phloem companion cell,high,PMID:45678901,Companion cell marker
+AT5G17420,Phloem sieve element,medium,PMID:45678901,Sieve element marker
+REV,Cambium,high,PMID:45678901,REVOLUTA - cambium activity
+WOX4,Cambium,high,PMID:45678901,WUSCHEL-RELATED HOMEOBOX 4
+PXY,Cambium,high,PMID:45678901,PHLOEM INTERCALATED WITH XYLEM
+AT5G06640,Cambium,medium,PMID:45678901,Cambium marker
+AT1G09750,Epidermis,high,PMID:45678901,Epidermis-specific transcription factor
+PDF2,Epidermis,high,PMID:45678901,Protodermal factor 2
+AT1G68840,Epidermis,medium,PMID:45678901,Epidermis marker
+CO2,Cortex,high,PMID:45678901,CORTEX - cortex identity
+AT1G62360,Cortex,medium,PMID:45678901,Cortex-specific gene
+AT2G37590,Pith,medium,PMID:45678901,Pith marker
+AT3G54590,Pith,medium,PMID:45678901,Pith-specific gene
