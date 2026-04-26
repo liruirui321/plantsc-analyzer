@@ -54,6 +54,37 @@ process DEG_PER_CLUSTER {
     """
 }
 
+process LLM_ANNOTATE {
+    label 'medium_cpu'
+    publishDir "${params.outdir}/05_annotate/llm", mode: 'copy'
+
+    input:
+    path(adata)
+
+    output:
+    path "llm_annotations.csv", emit: llm_csv
+    path "llm_annotation_report.txt", emit: report
+
+    when:
+    params.annotation.use_llm == true
+
+    script:
+    def api_key_arg = params.annotation.llm_api_key ? "--api_key ${params.annotation.llm_api_key}" : ""
+    """
+    python ${projectDir}/../scripts/05_annotate/llm_annotate.py \\
+        --input ${adata} \\
+        --output llm_annotations.csv \\
+        --cluster_key cluster \\
+        --n_genes ${params.annotation.llm_n_genes} \\
+        --species "${params.species}" \\
+        --tissue "${params.tissue}" \\
+        --model ${params.annotation.llm_model} \\
+        --provider ${params.annotation.llm_provider} \\
+        ${api_key_arg} \\
+        > llm_annotation_report.txt 2>&1
+    """
+}
+
 workflow ANNOTATE_WORKFLOW {
     take:
     clustered_data  // path to clustered h5ad
