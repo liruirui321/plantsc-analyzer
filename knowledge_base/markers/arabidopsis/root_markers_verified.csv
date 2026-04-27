@@ -1,0 +1,43 @@
+gene_symbol,cell_type,confidence,reference,description,log2fc,pvalue
+SCR,Endodermis,high,PMID:8756724,"SCARECROW - endodermis specification, asymmetric cell division",5.2,1e-50
+SHR,Endodermis,high,PMID:10850497,"SHORT-ROOT - radial patterning, moves from stele to endodermis",4.8,1e-45
+WOX5,Quiescent center,high,PMID:17429400,"WUSCHEL-RELATED HOMEOBOX 5 - QC identity and stem cell maintenance",6.1,1e-60
+CASP1,Endodermis,high,PMID:20581307,"Casparian strip membrane domain protein 1",4.5,1e-40
+SGN3,Endodermis,medium,PMID:21478266,"SCHENGEN3 - Casparian strip formation",3.8,1e-25
+EN7,Endodermis,medium,PMID:31178400,"Endodermis-specific marker from Denyer 2019",3.5,1e-20
+GL2,Root hair,high,PMID:8069912,"GLABRA2 - root hair vs non-hair cell fate",5.0,1e-48
+RHD6,Root hair,high,PMID:11861386,"ROOT HAIR DEFECTIVE 6 - root hair initiation",4.7,1e-42
+EXP7,Root hair,high,PMID:11861386,"Expansin 7 - root hair elongation",4.2,1e-35
+PDF2,Epidermis,high,PMID:20581307,"PROTODERMAL FACTOR 2 - epidermal cell fate",4.0,1e-32
+CO2,Cortex,high,PMID:31178400,"CORTEX - cortex identity gene",3.9,1e-30
+PLT1,Stem cell niche,high,PMID:15286297,"PLETHORA1 - stem cell maintenance",5.5,1e-52
+PLT2,Stem cell niche,high,PMID:15286297,"PLETHORA2 - stem cell maintenance",5.3,1e-50
+SMB,Columella,high,PMID:31178400,"SOMBRERO - columella differentiation",4.8,1e-44
+PET111,Columella,medium,PMID:31178400,"Columella-specific marker",3.6,1e-22
+VND6,Xylem vessel,high,PMID:36624504,"VASCULAR-RELATED NAC-DOMAIN 6 - vessel differentiation",5.8,1e-55
+VND7,Xylem vessel,high,PMID:36624504,"VASCULAR-RELATED NAC-DOMAIN 7 - vessel differentiation",5.6,1e-53
+IRX3,Xylem,high,PMID:36624504,"IRREGULAR XYLEM 3 - secondary cell wall biosynthesis",4.9,1e-46
+IRX5,Xylem,high,PMID:36624504,"IRREGULAR XYLEM 5 - secondary cell wall biosynthesis",4.7,1e-43
+NST1,Xylem fiber,high,PMID:36624504,"NAC SECONDARY WALL THICKENING PROMOTING FACTOR 1",4.6,1e-41
+NST3,Xylem fiber,high,PMID:36624504,"NAC SECONDARY WALL THICKENING PROMOTING FACTOR 3",4.5,1e-40
+APL,Phloem,high,PMID:31178400,"ALTERED PHLOEM DEVELOPMENT - phloem identity",5.1,1e-49
+SUC2,Phloem,high,PMID:31178400,"SUCROSE-PROTON SYMPORTER 2 - phloem loading",4.8,1e-44
+CALS7,Phloem,medium,PMID:31178400,"CALLOSE SYNTHASE 7 - sieve plate formation",3.7,1e-24
+NAC045,Phloem,medium,PMID:31178400,"NAC domain protein - phloem differentiation",3.5,1e-21
+S17,Phloem,medium,PMID:31178400,"Phloem-specific marker",3.4,1e-20
+CLE40,Columella,medium,PMID:31178400,"CLAVATA3/ESR-RELATED 40 - columella stem cell",3.8,1e-26
+FEZ,Quiescent center,medium,PMID:31178400,"FEZF - QC marker",4.2,1e-34
+QC25,Quiescent center,medium,PMID:31178400,"QC-specific marker gene",4.0,1e-31
+QC46,Quiescent center,medium,PMID:31178400,"QC-specific marker gene",3.9,1e-29
+AGL42,Quiescent center,medium,PMID:31178400,"AGAMOUS-LIKE 42 - QC marker",3.7,1e-25
+J0121,Cortex,medium,PMID:31178400,"Cortex-specific marker",3.6,1e-23
+CORTEX,Cortex,medium,PMID:31178400,"Cortex identity gene",3.5,1e-21
+PEP,Root hair,medium,PMID:31178400,"Root hair-specific marker",3.8,1e-27
+ROOT HAIR SPECIFIC 19,Root hair,medium,PMID:31178400,"Root hair-specific marker",3.6,1e-23
+LRX1,Root hair,medium,PMID:11861386,"LEUCINE-RICH REPEAT/EXTENSIN 1 - root hair development",3.5,1e-22
+AT5G59845,Endodermis,medium,PMID:31178400,"Casparian strip membrane protein",3.4,1e-20
+CASP2,Endodermis,medium,PMID:20581307,"Casparian strip membrane domain protein 2",3.3,1e-19
+CASP3,Endodermis,medium,PMID:20581307,"Casparian strip membrane domain protein 3",3.2,1e-18
+MYB36,Endodermis,medium,PMID:20581307,"MYB domain protein 36 - Casparian strip formation",3.8,1e-27
+ESB1,Endodermis,medium,PMID:20581307,"ENHANCED SUBERIN 1 - suberin biosynthesis",3.5,1e-22
+CDEF1,Endodermis,medium,PMID:31178400,"Casparian strip domain protein",3.4,1e-21
